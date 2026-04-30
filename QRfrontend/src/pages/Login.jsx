@@ -13,7 +13,7 @@ export default function Login(){
         const res=await API.post("/users/login",{email,password})
         login(res.data)
         localStorage.setItem("role",res.data.data.user.role)
-        console.log("role",JSON.stringify(res.data.data.user.role));
+        // console.log("role",JSON.stringify(res.data.data.user.role));
         
         navigate("/dashboard")
     }
