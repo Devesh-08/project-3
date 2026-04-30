@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API=axios.create({
-    baseURL:"http://localhost:3000" //backend
+    baseURL:"https://project-3-3s2s.onrender.com" //backend
 })
 
 //attach jwt automatically
