@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const API=axios.create({
-    baseURL:"https://project-3-3s2s.onrender.com" //backend
-})
+const API = axios.create({
+  baseURL: import.meta.env.VITE_API_URL//backend connection
+});
 
 //attach jwt automatically
 API.interceptors.request.use((req)=>{
