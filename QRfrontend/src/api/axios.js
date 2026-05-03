@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL//backend connection
+  baseURL: "https://project-3-3s2s.onrender.com" //backend connection
 });
 
 //attach jwt automatically
