@@ -10,12 +10,12 @@ export default function Dashboard() {
         fetchBooks()
     }, [])
     const role = localStorage.getItem("role")
-    console.log("dash role",role);
+    // console.log("dash role",role);
     
 
     const fetchBooks = async () => {
         const res = await API.get("/books/Allbooks")
-        console.log("res",res.data.data)
+        // console.log("res",res.data.data)
         setBooks(res.data.data)
     }
 

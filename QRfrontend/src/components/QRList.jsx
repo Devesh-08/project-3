@@ -1,5 +1,5 @@
 export default function QRList({copies}){
-    console.log("copies:",copies);
+    // console.log("copies:",copies);
     
     return(
         <div className="mt-6">

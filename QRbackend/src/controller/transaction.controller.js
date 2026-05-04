@@ -11,11 +11,11 @@ exports.issueBook=asyncHandler(async (req,res)=>{
 
     const {bookQR}=req.body
     const userId=req.user?.id
-    console.log(userId);
+    // console.log(userId);
 
     //findUser
     const user= await User.findById(userId)
-    console.log("user:",user);
+    // console.log("user:",user);
     if(!user){
         throw new apiError(404,"user not found")
     }

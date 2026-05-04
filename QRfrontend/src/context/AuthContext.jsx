@@ -16,10 +16,10 @@ export default function AuthProvider({children}){
 });
 
     const login=(data)=>{
-        console.log("Login recevied",data.data);
+        // console.log("Login recevied",data.data);
         
         const{accessToken,user}=data.data
-        console.log("Access:",accessToken);
+        // console.log("Access:",accessToken);
         
 
         localStorage.setItem("token",accessToken)

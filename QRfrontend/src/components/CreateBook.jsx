@@ -29,7 +29,7 @@ export default function CreateBook(){
                 title:String(form.title),
                 author:String(form.author)
             })
-            console.log("api",res.data);
+            // console.log("api",res.data);
             
             setCopies(res.data.data.copies)
 

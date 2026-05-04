@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import API from "../api/axios";
+import { Link } from "react-router-dom";
 
 export default function Scanner() {
   const [mode, setMode] = useState("issue");
@@ -38,7 +39,7 @@ export default function Scanner() {
       isRunningRef.current = false;
     }
   } catch (err) {
-    console.error("Error scanning:", err);
+    // console.error("Error scanning:", err);
     alert("Error scanning");
   }
 }
@@ -62,7 +63,8 @@ export default function Scanner() {
 
   return (
     <div className="p-6 block bg-slate-700 h-[100vh]">
-      <a href="/dashboard" className="text-end text-white">&larr; Back</a>
+      {/* <a href="/dashboard" className="text-end text-white">&larr; Back</a> */}
+      <Link to="/dashboard" className="text-end text-white">&larr; Back</Link>
       <h2 className="text-xl mb-4 text-white">Scanner</h2>
 
       <div className="flex gap-4 mb-4">

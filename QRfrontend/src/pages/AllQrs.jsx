@@ -1,6 +1,7 @@
 import { useEffect,useState } from "react";
 import API from "../api/axios";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router-dom";
 
 export default function QRgallery(){
     const[qrCodes,setQrCodes]=useState([])
@@ -8,14 +9,15 @@ export default function QRgallery(){
     useEffect(()=>{
         API.get("/books/getAllQR")
         .then(res=>{
-            console.log(res.data);
+            // console.log(res.data);
             setQrCodes(res.data.data)
         })
         .catch(err => console.error(err))
     },[])
     return (
     <div className="min-h-screen bg-slate-800 p-6">
-        <a href="/dashboard" className="text-white font-extrabold">&larr; Back</a>
+        {/* <a href="/dashboard" className="text-white font-extrabold">&larr; Back</a> */}
+        <Link to="/dashboard" className="text-white font-extrabold">&larr; Back</Link>
       <h2 className="text-2xl font-bold mb-6 text-center text-white">
         📦 All QR Codes
       </h2>
