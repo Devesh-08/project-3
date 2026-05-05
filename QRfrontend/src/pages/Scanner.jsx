@@ -5,89 +5,109 @@ import { Link } from "react-router-dom";
 
 export default function Scanner() {
   const [mode, setMode] = useState("issue");
-
+  const modeRef = useRef("issue");
   const scannerRef = useRef(null);
-  const isRunningRef = useRef(false);
+  
+  // The "Gatekeeper" lock
+  const isProcessingRef = useRef(false);
 
   useEffect(() => {
-  const initScanner = async () => {
-    if (!scannerRef.current) {
-      scannerRef.current = new Html5Qrcode("reader");
-    }
-    const scanner = scannerRef.current;
+    modeRef.current = mode;
+  }, [mode]);
 
-    if (isRunningRef.current) {
-      await scanner.stop();
-      isRunningRef.current = false;
-    }
+  useEffect(() => {
+    const scannerId = "reader";
+    scannerRef.current = new Html5Qrcode(scannerId);
 
-    scanner
-      .start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        async (decodedText) => {
-  try {
-    const endpoint = mode === "issue" ? "/transaction/issue" : "/transaction/return";
+    const startScanner = async () => {
+      try {
+        await scannerRef.current.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          onScanSuccess
+        );
+      } catch (err) {
+        console.error("Scanner failed to start:", err);
+      }
+    };
 
-    await API.post(endpoint, { bookQR: decodedText });
+    const onScanSuccess = async (decodedText) => {
+      // 1. Check if the lock is active. If true, ignore this scan frame.
+      if (isProcessingRef.current) return;
 
-    alert(`Book ${mode} successful`);
+      // 2. Immediately activate the lock
+      isProcessingRef.current = true;
 
-    // Stop scanner after success
-    if (scannerRef.current && isRunningRef.current) {
-      await scannerRef.current.stop();
-      isRunningRef.current = false;
-    }
-  } catch (err) {
-    // console.error("Error scanning:", err);
-    alert("Error scanning");
-  }
-}
-      )
-      .then(() => {
-        isRunningRef.current = true;
-      })
-      .catch((err) => console.log("Start error:", err));
-  };
+      try {
+        const currentMode = modeRef.current;
+        const endpoint = currentMode === "issue" ? "/transaction/issue" : "/transaction/return";
 
-  initScanner();
+        await API.post(endpoint, { bookQR: decodedText });
+        
+        // 3. Show the alert. Code execution pauses here until user clicks "OK"
+        alert(`Book ${currentMode} successful!`);
 
-  return () => {
-    if (scannerRef.current && isRunningRef.current) {
-      scannerRef.current.stop().then(() => {
-        isRunningRef.current = false;
-      });
-    }
-  };
-}, [mode]);
+        // 4. After clicking OK, wait 2 seconds (cooldown) before unlocking
+        // This prevents re-scanning the same book immediately.
+        setTimeout(() => {
+          isProcessingRef.current = false;
+        }, 2000);
+
+      } catch (err) {
+        console.error("API Error:", err);
+        alert("Transaction failed. Please try again.");
+        
+        // Unlock immediately on error so they can try again
+        isProcessingRef.current = false;
+      }
+    };
+
+    startScanner();
+
+    return () => {
+      if (scannerRef.current?.isScanning) {
+        scannerRef.current.stop().then(() => scannerRef.current.clear());
+      }
+    };
+  }, []);
 
   return (
-    <div className="p-6 block bg-slate-700 h-[100vh]">
-      {/* <a href="/dashboard" className="text-end text-white">&larr; Back</a> */}
-      <Link to="/dashboard" className="text-end text-white">&larr; Back</Link>
-      <h2 className="text-xl mb-4 text-white">Scanner</h2>
-
-      <div className="flex gap-4 mb-4">
-        <button
-          onClick={() => setMode("issue")}
-          className={`px-4 py-2 rounded ${
-            mode === "issue" ? "bg-green-500 text-white" : "bg-gray-200"
-          }`}
-        >
-          Issue
-        </button>
-
-        <button
-          onClick={() => setMode("return")}
-          className={`px-4 py-2 rounded ${
-            mode === "return" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-        >
-          Return
-        </button>
+    <div className="p-6 bg-slate-800 min-h-screen text-white">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-white-400">Scanner</h2>
+        <Link to="/dashboard" className="bg-slate-700 px-4 py-2 rounded-lg">
+          &larr; Back
+        </Link>
       </div>
 
-      <div id="reader" className="w-[300px]" />
+      <div className="bg-slate-700 p-4 rounded-xl mb-6">
+        <div className="flex gap-4">
+          <button
+            onClick={() => setMode("issue")}
+            className={`flex-1 py-3 rounded-lg font-bold ${
+              mode === "issue" ? "bg-green-500 shadow-lg" : "bg-slate-600"
+            }`}
+          >
+            ISSUE
+          </button>
+          <button
+            onClick={() => setMode("return")}
+            className={`flex-1 py-3 rounded-lg font-bold ${
+              mode === "return" ? "bg-blue-500 shadow-lg" : "bg-slate-600"
+            }`}
+          >
+            RETURN
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center">
+        <div id="reader" className="w-full max-w-md rounded-2xl border-4 border-slate-600 bg-black overflow-hidden" />
+        <p className="mt-4 text-slate-400 text-sm">
+          {mode === "issue" ? "Ready to Issue..." : "Ready to Return..."}
+        </p>
+      </div>
     </div>
   );
 }
+

@@ -17,7 +17,9 @@ export default function QRgallery(){
     return (
     <div className="min-h-screen bg-slate-800 p-6">
         {/* <a href="/dashboard" className="text-white font-extrabold">&larr; Back</a> */}
-        <Link to="/dashboard" className="text-white font-extrabold">&larr; Back</Link>
+        <Link to="/dashboard" className="bg-slate-700 px-4 py-2 rounded-lg text-end text-white">
+          &larr; Back
+        </Link>
       <h2 className="text-2xl font-bold mb-6 text-center text-white">
         📦 All QR Codes
       </h2>
