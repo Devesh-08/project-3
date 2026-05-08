@@ -1,12 +1,13 @@
 import Navbar from "../components/Navbar";
 import CreateBook from "../components/CreateBook";
 import Transaction from "../components/Transactions";
+import { Link } from "react-router-dom";
 
 export default function Admin(){
     return(
         <>
         <Navbar/>
-        <Link to="/dashboard" className="bg-slate-700 px-4 py-2 rounded-lg">
+        <Link to="/dashboard" className="bg-slate-700 px-4 py-2 text-white block w-full text-end">
           &larr; Back
         </Link>
         <h2 className="flex justify-center bg-slate-700 text-white text-3xl pt-5">Admin Panel</h2>

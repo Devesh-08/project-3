@@ -3,6 +3,7 @@ import API from "../api/axios";
 
 export default function Transaction() {
     const [data, setData] = useState([])
+    const [transaction, setTransaction] = useState([])
 
     useEffect(() => {
         fetchTransaction()
@@ -11,6 +12,17 @@ export default function Transaction() {
     const fetchTransaction = async () => {
         const res = await API.get("/transaction/allTransaction")
         setData(res.data.data || res.data)
+    }
+
+    const deleteTransaction = async (id) => {
+        try {
+            await API.delete(`/transaction/deleteTransaction/${id}`)
+            alert("Transaction deleted")
+
+            setTransaction(prev => prev.filter(T => T._id !== id))
+        } catch (error) {
+            alert(error || "Deletion failed")
+        }
     }
 
     return (
@@ -23,8 +35,9 @@ export default function Transaction() {
                 {data.map((t) => (
                     <div
                         key={t._id}
-                        className="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition"
+                        className="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg transition flex justify-between"
                     >
+                        <div>
                         <p className="text-gray-700">
                             <span className="font-semibold">User:</span>{" "}
                             {t.userId?.name || "N/A"}
@@ -65,6 +78,11 @@ export default function Transaction() {
                                 {t.fine?.paid ? "Yes" : "No"}
                             </span>
                         </p>
+                        </div>
+                            <button onClick={() => deleteTransaction(t._id)}
+                                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-400 text-end h-[32px] w-[70px]">
+                                Delete
+                            </button>
                     </div>
                 ))}
             </div>

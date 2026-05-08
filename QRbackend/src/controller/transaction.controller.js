@@ -127,3 +127,18 @@ exports.getAllTransactions=asyncHandler(async (req,res)=>{
         new apiError(500,"failed to fetch transaction")
     }
 })
+
+// Delete finished transactions
+exports.deleteTransaction=asyncHandler(async(req,res)=>{
+    const {id}=req.params;
+
+    const DT=await Transaction.findByIdAndDelete(id);
+
+    if(!DT){
+        console.log("Transaction not found");
+    }
+
+    return res
+    .status(200)
+    .json(new apiResponse(200,DT,"Transaction deleted successfully"))
+})

@@ -10,12 +10,15 @@ export default function Login(){
     
     const {login}=useAuth()
     const handleLogin =async()=>{
-        const res=await API.post("/users/login",{email,password})
-        login(res.data)
-        localStorage.setItem("role",res.data.data.user.role)
+        try {
+            const res=await API.post("/users/login",{email,password})
+            login(res.data)
+            localStorage.setItem("role",res.data.data.user.role)
         // console.log("role",JSON.stringify(res.data.data.user.role));
-        
         navigate("/dashboard")
+        } catch (error) {
+            alert(`User with this credential is not registered yet `)
+        }
     }
 
     return (

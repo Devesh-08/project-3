@@ -41,8 +41,8 @@ export default function QRgallery(){
           >
             {item.status}
           </p>
-            <a href={item.qrCode}
-            download={`qr-${item._id}.png`}
+            <a href={item.qrImage}
+            download={`qr-${item.bookTitle}.jpg`}
             className="text-blue-500 text-sm"
             >
               Download
